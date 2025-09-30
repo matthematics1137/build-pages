@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function(){
+      try {
+        var m = localStorage.getItem('theme');
+        if (m === 'light' || m === 'dark') {
+          document.documentElement.setAttribute('data-theme', m);
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="{{asset_base}}/assets/css/style.css" />
+  <script defer src="{{asset_base}}/assets/js/site-nav.js"></script>
+  <!-- KaTeX (optional) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <script defer src="{{asset_base}}/assets/js/math.js"></script>
+  <style>
+    /* Minimal safety for pages without full site CSS */
+    body{font:16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, sans-serif; margin:0}
+    .layout{display:grid;grid-template-columns:260px 1fr;gap:16px}
+    @media(max-width:900px){.layout{grid-template-columns:1fr}} 
+    .content{padding:16px}
+  </style>
+  <base href="/">
+</head>
+<body>
+  <button id="navToggle" class="hamburger" aria-label="Toggle navigation" aria-expanded="false">≡</button>
+  <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle light/dark">◎</button>
+  <div class="font-slider" aria-label="Font size">
+    <input id="fontSize" type="range" min="90" max="220" step="5" />
+  </div>
+  <div id="backdrop" class="backdrop" hidden></div>
+  <div class="layout">
+    <aside id="sidebar" class="sidebar"></aside>
+    <main class="content md-content">
+      <h1>{{title}}</h1>
+      {{content}}
+      <div id="section-nav" style="margin-top: 1rem;"></div>
+    </main>
+  </div>
+</body>
+</html>
+
