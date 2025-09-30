@@ -10,7 +10,24 @@
           {left: '\\(', right: '\\)', display: false},
           {left: '\\[', right: '\\]', display: true}
         ],
-        throwOnError: false
+        throwOnError: false,
+        macros: {
+          "\\R": "\\mathbb{R}",
+          "\\RR": "\\mathbb{R}",
+          "\\N": "\\mathbb{N}",
+          "\\NN": "\\mathbb{N}",
+          "\\Z": "\\mathbb{Z}",
+          "\\ZZ": "\\mathbb{Z}",
+          "\\Q": "\\mathbb{Q}",
+          "\\QQ": "\\mathbb{Q}",
+          "\\E": "\\mathbb{E}",
+          "\\Var": "\\mathrm{Var}",
+          "\\Cov": "\\mathrm{Cov}",
+          "\\Prob": "\\mathbb{P}",
+          "\\argmax": "\\mathop{\\mathrm{arg\\,max}}",
+          "\\argmin": "\\mathop{\\mathrm{arg\\,min}}",
+          "\\func": "\\operatorname{func}"
+        }
       });
     });
   }
@@ -20,4 +37,3 @@
     init();
   }
 })();
-
