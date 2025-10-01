@@ -76,7 +76,15 @@
       const willOpen = open ?? !document.body.classList.contains('nav-open');
       document.body.classList.toggle('nav-open', willOpen);
       if (btn) btn.setAttribute('aria-expanded', String(willOpen));
+      try { localStorage.setItem('navOpen', willOpen ? '1' : '0'); } catch(e) {}
     }
+    // Restore previous sidebar state so it doesn't collapse on navigation
+    try {
+      const saved = localStorage.getItem('navOpen');
+      const shouldOpen = saved === '1';
+      document.body.classList.toggle('nav-open', shouldOpen);
+      if (btn) btn.setAttribute('aria-expanded', String(shouldOpen));
+    } catch(e) {}
     if (btn) btn.addEventListener('click', () => toggle());
     if (backdrop) backdrop.addEventListener('click', () => toggle(false));
     document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') toggle(false); });
@@ -117,4 +125,3 @@
     }
   });
 })();
-

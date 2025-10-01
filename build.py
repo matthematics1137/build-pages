@@ -108,10 +108,21 @@ def build(book: pathlib.Path, out_dir: pathlib.Path, assets_dir: pathlib.Path, t
     partials_dir.mkdir(parents=True, exist_ok=True)
 
     sections = {}
+    # Include all top-level directories as sections, even if empty
+    for entry in sorted(book.iterdir()):
+        if entry.is_dir() and not entry.name.startswith('.'):
+            sections.setdefault(entry.name, [])
+    # Attach any Markdown files to their top-level section
     for md_path in book.rglob('*.md'):
-        rel = md_path.relative_to(book)
-        sections.setdefault(rel.parts[0], []).append(md_path)
-    for k in sections:
+        try:
+            rel = md_path.relative_to(book)
+        except Exception:
+            continue
+        parts = list(rel.parts)
+        if not parts:
+            continue
+        sections.setdefault(parts[0], []).append(md_path)
+    for k in list(sections.keys()):
         sections[k] = sorted(sections[k])
 
     manifest = []
@@ -146,7 +157,7 @@ def build(book: pathlib.Path, out_dir: pathlib.Path, assets_dir: pathlib.Path, t
     (assets_dir / 'site.json').write_text(json.dumps(manifest, indent=2), encoding='utf-8')
     sidebar = ['<div class="card">', '  <nav>', f'    <a href="{asset_base}/index.html" data-match="/index.html">Home</a>', '    <hr style="border:none;border-top:1px solid var(--border);margin:8px 0;">', '    <strong style="display:block;padding:4px 10px;color:var(--muted)">Sections</strong>']
     for sect in manifest:
-      first = sect['pages'][0]['path'] if sect['pages'] else f"/pages/{sect['slug']}/"
+      first = sect['pages'][0]['path'] if sect['pages'] else f"/pages/{sect['slug']}/index.html"
       sidebar.append(f'    <a href="{asset_base}{first}" data-match="/pages/{sect["slug"]}/">{html.escape(sect["label"])}</a>')
       if sect['pages']:
         sidebar.append('    <ul style="margin:6px 0 10px 16px; padding:0; list-style: none;">')
@@ -155,6 +166,17 @@ def build(book: pathlib.Path, out_dir: pathlib.Path, assets_dir: pathlib.Path, t
         sidebar.append('    </ul>')
     sidebar += ['  </nav>', '</div>']
     (partials_dir / 'sidebar.html').write_text('\n'.join(sidebar), encoding='utf-8')
+
+    # Create section landing pages
+    for sect in manifest:
+        sec_dir = out_dir / sect['slug']
+        sec_dir.mkdir(parents=True, exist_ok=True)
+        links = []
+        for p in sect['pages']:
+            links.append(f'<li><a href="{asset_base}{p["path"]}">{html.escape(p["title"])}</a></li>')
+        body = '<ul>' + '\n'.join(links) + '</ul>' if links else '<p>Coming soon.</p>'
+        sec_html = render_page(template_path, asset_base, sect['label'], body)
+        (sec_dir / 'index.html').write_text(sec_html, encoding='utf-8')
 
     cards = []
     for sect in manifest:

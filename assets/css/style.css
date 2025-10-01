@@ -92,7 +92,16 @@ footer { margin-top: 2rem; color: #777; font-size: 0.9rem; }
 .layout { display: grid; grid-template-columns: 1fr; align-items: start; }
 /* Sidebar becomes an off‑canvas drawer */
 .sidebar { position: fixed; inset: 0 auto 0 0; width: 260px; transform: translateX(-100%); transition: transform .2s ease-out; z-index: 1000; }
-.sidebar .card { height: 100%; margin: 0; padding: 0.75rem 0.75rem; border-radius: 0; border-right: 1px solid var(--border); }
+.sidebar .card {
+  height: 100%;
+  margin: 0;
+  padding: 0.75rem 0.75rem;
+  border-radius: 0;
+  border-right: 1px solid var(--border);
+  overflow-y: auto;              /* independent scroll for sidebar */
+  overscroll-behavior: contain;  /* prevent body scroll chaining */
+  -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
+}
 .sidebar nav a { display: block; padding: 6px 10px; color: var(--fg); text-decoration: none; border-radius: 6px; }
 .sidebar nav a:hover { background: rgba(0,0,0,0.06); }
 .sidebar nav a.active { background: rgba(11,102,214,0.12); color: var(--accent); font-weight: 700; }
